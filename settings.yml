@@ -3,16 +3,14 @@ name: "Global Weather Forecast (Yr.no)"
 author: "phobus"
 description: >
   Current conditions, 24-hour hourly forecast with precipitation bars,
-  and 6-day forecast. Data from Yr.no (Norwegian Meteorological Institute).
-  Works for any location worldwide.
+  and 7-day forecast. Data from Yr.no. Works for any location worldwide.
 
 markup_version: 1
 strategy: polling
-refresh_frequency: 3600  # 1 hour
+refresh_frequency: 3600
 
-polling_url: "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={{latitude}}&lon={{longitude}}"
+polling_url: "https://YOUR_GITHUB_USERNAME.github.io/trmnl-weather-yr/weather.json"
 polling_verb: GET
-polling_headers: "User-Agent=TRMNL-Weather-Yr/1.0 github.com/runty"
 
 layouts:
   - full

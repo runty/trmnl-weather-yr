@@ -2,54 +2,34 @@
   <!-- Current Conditions + 6-Day -->
   <div class="flex flex--between flex--center-y w--full pb--1 border-b-2">
     <div class="flex flex--center-y gap--small no-shrink">
-      {% if cur_sym contains "rain" or cur_sym contains "sleet" or cur_sym contains "snow" or cur_sym contains "thunder" %}{% assign wc = "wi-precip" %}{% else %}{% assign wc = "" %}{% endif %}
-      {% if cur_sym contains "clearsky" and cur_sym contains "night" %}{% assign wi = "wi-night-clear" %}{% elsif cur_sym contains "clearsky" %}{% assign wi = "wi-day-sunny" %}{% elsif cur_sym contains "fair" and cur_sym contains "night" %}{% assign wi = "wi-night-clear" %}{% elsif cur_sym contains "fair" %}{% assign wi = "wi-day-sunny" %}{% elsif cur_sym contains "partlycloudy" and cur_sym contains "night" %}{% assign wi = "wi-night-alt-partly-cloudy" %}{% elsif cur_sym contains "partlycloudy" %}{% assign wi = "wi-day-cloudy" %}{% elsif cur_sym contains "cloudy" %}{% assign wi = "wi-cloudy" %}{% elsif cur_sym contains "fog" %}{% assign wi = "wi-fog" %}{% elsif cur_sym contains "heavyrain" %}{% assign wi = "wi-rain" %}{% elsif cur_sym contains "lightrain" %}{% assign wi = "wi-day-sprinkle" %}{% elsif cur_sym contains "rain" %}{% assign wi = "wi-day-rain" %}{% elsif cur_sym contains "heavysnow" %}{% assign wi = "wi-snow" %}{% elsif cur_sym contains "snow" %}{% assign wi = "wi-day-snow" %}{% elsif cur_sym contains "sleet" %}{% assign wi = "wi-day-rain-mix" %}{% elsif cur_sym contains "thunder" %}{% assign wi = "wi-day-thunderstorm" %}{% else %}{% assign wi = "wi-cloud" %}{% endif %}
-      <i class="wi {{ wi }} {{ wc }} wi-xxl"></i>
-      <span class="value value--xxlarge bold">{{ cur.air_temperature | round }}°</span>
+      <i class="wi {{ current.icon }} {% if current.is_precip %}wi-precip{% endif %} wi-xxl"></i>
+      <span class="value value--xxlarge bold">{{ current.temp }}°</span>
       <div>
-        <span class="label label--small bold">{{ cur_sym | replace: "_", " " | replace: "day", "" | replace: "night", "" | capitalize }}</span>
-        {% assign wind_kmh = cur.wind_speed | times: 3.6 | round %}
-        {% assign deg = cur.wind_from_direction | round %}
-        {% if deg >= 337 or deg < 23 %}{% assign wd = "N" %}{% elsif deg < 68 %}{% assign wd = "NE" %}{% elsif deg < 113 %}{% assign wd = "E" %}{% elsif deg < 158 %}{% assign wd = "SE" %}{% elsif deg < 203 %}{% assign wd = "S" %}{% elsif deg < 248 %}{% assign wd = "SW" %}{% elsif deg < 293 %}{% assign wd = "W" %}{% else %}{% assign wd = "NW" %}{% endif %}
-        <div class="description text-sm">{{ wd }} {{ wind_kmh }}km/h · {{ cur.relative_humidity | round }}%</div>
+        <span class="label label--small bold">{{ current.condition }}</span>
+        <div class="description text-sm">{{ current.wind_dir }} {{ current.wind_speed }}km/h · {{ current.humidity }}%</div>
       </div>
     </div>
 
-    <!-- 6-Day Forecast (noon entries) -->
+    <!-- 6-Day Forecast -->
     <table class="daily-tbl">
       <tr>
-        {% assign dc = 0 %}{% assign ld = "" %}
-        {% for ts in ts_all %}{% assign th = ts.time | date: "%H" | plus: 0 %}{% assign td = ts.time | date: "%a" %}
-          {% if th == 12 and td != ld %}{% if dc >= 6 %}{% break %}{% endif %}
-            <td><span class="label label--small bold">{{ td }}</span></td>
-          {% assign ld = td %}{% assign dc = dc | plus: 1 %}{% endif %}
+        {% for day in daily limit: 6 %}
+          <td><span class="label label--small bold">{{ day.day }}</span></td>
         {% endfor %}
       </tr>
       <tr>
-        {% assign dc = 0 %}{% assign ld = "" %}
-        {% for ts in ts_all %}{% assign th = ts.time | date: "%H" | plus: 0 %}{% assign td = ts.time | date: "%a" %}
-          {% if th == 12 and td != ld %}{% if dc >= 6 %}{% break %}{% endif %}
-            {% assign sym = ts.data.next_6_hours.summary.symbol_code | default: ts.data.next_12_hours.summary.symbol_code %}
-            {% if sym contains "rain" or sym contains "sleet" or sym contains "snow" or sym contains "thunder" %}{% assign wc = "wi-precip" %}{% else %}{% assign wc = "" %}{% endif %}
-            {% if sym contains "clearsky" %}{% assign wi = "wi-day-sunny" %}{% elsif sym contains "fair" %}{% assign wi = "wi-day-sunny" %}{% elsif sym contains "partlycloudy" %}{% assign wi = "wi-day-cloudy" %}{% elsif sym contains "cloudy" %}{% assign wi = "wi-cloudy" %}{% elsif sym contains "fog" %}{% assign wi = "wi-fog" %}{% elsif sym contains "heavyrain" %}{% assign wi = "wi-rain" %}{% elsif sym contains "lightrain" %}{% assign wi = "wi-day-sprinkle" %}{% elsif sym contains "rain" %}{% assign wi = "wi-day-rain" %}{% elsif sym contains "snow" %}{% assign wi = "wi-day-snow" %}{% elsif sym contains "sleet" %}{% assign wi = "wi-day-rain-mix" %}{% elsif sym contains "thunder" %}{% assign wi = "wi-day-thunderstorm" %}{% else %}{% assign wi = "wi-cloud" %}{% endif %}
-            <td><i class="wi {{ wi }} {{ wc }} wi-sm"></i></td>
-          {% assign ld = td %}{% assign dc = dc | plus: 1 %}{% endif %}
+        {% for day in daily limit: 6 %}
+          <td><i class="wi {{ day.icon }} {% if day.is_precip %}wi-precip{% endif %} wi-sm"></i></td>
         {% endfor %}
       </tr>
       <tr>
-        {% assign dc = 0 %}{% assign ld = "" %}
-        {% for ts in ts_all %}{% assign th = ts.time | date: "%H" | plus: 0 %}{% assign td = ts.time | date: "%a" %}
-          {% if th == 12 and td != ld %}{% if dc >= 6 %}{% break %}{% endif %}
-            <td><span class="label label--small bold">{{ ts.data.instant.details.air_temperature | round }}°</span></td>
-          {% assign ld = td %}{% assign dc = dc | plus: 1 %}{% endif %}
+        {% for day in daily limit: 6 %}
+          <td><span class="label label--small bold">{{ day.high }}°</span></td>
         {% endfor %}
       </tr>
       <tr>
-        {% assign dc = 0 %}{% assign ld = "" %}
-        {% for ts in ts_all %}{% assign th = ts.time | date: "%H" | plus: 0 %}{% assign td = ts.time | date: "%a" %}
-          {% if th == 0 and td != ld and dc < 6 %}
-            <td><span class="description">{{ ts.data.instant.details.air_temperature | round }}°</span></td>
-          {% assign ld = td %}{% assign dc = dc | plus: 1 %}{% endif %}
+        {% for day in daily limit: 6 %}
+          <td><span class="description">{% if day.low %}{{ day.low }}°{% endif %}</span></td>
         {% endfor %}
       </tr>
     </table>
@@ -61,24 +41,19 @@
       <tr>
         {% for col in (0..2) %}
           {% assign idx = col | times: 8 | plus: row %}
-          {% assign h = ts_all[idx] %}
+          {% assign h = hourly[idx] %}
           {% if h %}
-            {% assign utc_epoch = h.time | date: "%s" | plus: 0 %}
+            {% assign utc_epoch = h.time_iso | date: "%s" | plus: 0 %}
             {% assign local_epoch = utc_epoch | plus: trmnl.user.utc_offset %}
             <td class="nowrap text--right td-time"><span class="label">{{ local_epoch | date: "%-I%P" }}</span></td>
             <td class="td-icon text--center">
-              {% assign sym = h.data.next_1_hours.summary.symbol_code | default: h.data.next_6_hours.summary.symbol_code %}
-              {% if sym contains "rain" or sym contains "sleet" or sym contains "snow" or sym contains "thunder" %}{% assign wc = "wi-precip" %}{% else %}{% assign wc = "" %}{% endif %}
-              {% if sym contains "clearsky" and sym contains "night" %}{% assign wi = "wi-night-clear" %}{% elsif sym contains "clearsky" %}{% assign wi = "wi-day-sunny" %}{% elsif sym contains "fair" and sym contains "night" %}{% assign wi = "wi-night-clear" %}{% elsif sym contains "fair" %}{% assign wi = "wi-day-sunny" %}{% elsif sym contains "partlycloudy" and sym contains "night" %}{% assign wi = "wi-night-alt-partly-cloudy" %}{% elsif sym contains "partlycloudy" %}{% assign wi = "wi-day-cloudy" %}{% elsif sym contains "cloudy" %}{% assign wi = "wi-cloudy" %}{% elsif sym contains "fog" %}{% assign wi = "wi-fog" %}{% elsif sym contains "heavyrain" %}{% assign wi = "wi-rain" %}{% elsif sym contains "lightrain" %}{% assign wi = "wi-day-sprinkle" %}{% elsif sym contains "rain" %}{% assign wi = "wi-day-rain" %}{% elsif sym contains "snow" %}{% assign wi = "wi-day-snow" %}{% elsif sym contains "sleet" %}{% assign wi = "wi-day-rain-mix" %}{% elsif sym contains "thunder" %}{% assign wi = "wi-day-thunderstorm" %}{% else %}{% assign wi = "wi-cloud" %}{% endif %}
-              <i class="wi {{ wi }} {{ wc }} wi-md"></i>
+              <i class="wi {{ h.icon }} {% if h.is_precip %}wi-precip{% endif %} wi-md"></i>
             </td>
-            <td class="nowrap text--right td-temp"><span class="label bold">{{ h.data.instant.details.air_temperature | round }}°</span></td>
-            {% assign precip = h.data.next_1_hours.details.precipitation_amount | default: 0 | times: 20 %}
-            {% if precip > 100 %}{% assign precip = 100 %}{% endif %}
+            <td class="nowrap text--right td-temp"><span class="label bold">{{ h.temp }}°</span></td>
             <td>
               <div class="hour-bar-wrap">
-                {% if precip > 0 %}
-                  <div class="hour-bar" style="width: {{ precip | round }}%;"></div>
+                {% if h.precip_bar > 0 %}
+                  <div class="hour-bar" style="width: {{ h.precip_bar }}%;"></div>
                 {% endif %}
               </div>
             </td>
@@ -91,5 +66,5 @@
 
 <div class="title_bar">
   <span class="title">Yr.no Weather</span>
-  <span class="instance">{{ latitude }}, {{ longitude }}</span>
+  <span class="instance">{{ lat }}, {{ lon }}</span>
 </div>

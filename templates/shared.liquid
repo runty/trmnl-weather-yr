@@ -29,7 +29,3 @@
   .td-temp { width: 30px; }
 </style>
 
-{% assign ts_all = properties.timeseries %}
-{% assign now = ts_all[0] %}
-{% assign cur = now.data.instant.details %}
-{% assign cur_sym = now.data.next_1_hours.summary.symbol_code | default: now.data.next_6_hours.summary.symbol_code %}
