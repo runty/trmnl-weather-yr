@@ -57,8 +57,9 @@
                 {% endif %}
               </div>
             </td>
-            <td class="nowrap text--right" style="width: 28px;">
-              {% if h.precip_mm > 0 %}<span class="description">{{ h.precip_mm }}mm</span>{% endif %}
+            {% assign pmm = h.precip_mm | plus: 0.0 %}
+            <td class="nowrap text--right" style="width: 30px;">
+              {% if pmm > 0 %}<span class="description">{{ pmm }}mm</span>{% endif %}
             </td>
           {% endif %}
         {% endfor %}
