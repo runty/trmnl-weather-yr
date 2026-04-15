@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css" />
+<style>
+  *, .title, .value, .label, .description, .instance, .index, span, td, th, div {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif !important;
+  }
+  .wi { font-family: 'weathericons' !important; color: #0000FF; }
+  .wi-precip { color: #FF0000 !important; }
+  .wi-xs { font-size: 16px; }
+  .wi-sm { font-size: 18px; }
+  .wi-md { font-size: 22px; }
+  .wi-lg { font-size: 28px; }
+  .wi-xl { font-size: 36px; }
+  .wi-xxl { font-size: 42px; }
+  .border-b-1 { border-bottom: 1px solid #ccc; }
+  .border-b-2 { border-bottom: 2px solid black; }
+  .border-l-2 { border-left: 2px solid black; }
+  .bold { font-weight: bold; }
+  .text-sm { font-size: 12px; }
+  .nowrap { white-space: nowrap; }
+  .hourly-tbl { width: 100%; border-collapse: collapse; }
+  .hourly-tbl td { vertical-align: middle; padding: 2px 3px; }
+  .daily-tbl { border-collapse: collapse; table-layout: fixed; }
+  .daily-tbl td { vertical-align: top; text-align: center; padding: 0 3px; width: 50px; }
+  .hour-bar-wrap { width: 100%; height: 8px; position: relative; background: #ffcc00; }
+  .hour-bar { position: absolute; top: 0; left: 0; height: 100%; background: #2266cc; }
+  .td-time { width: 40px; }
+  .td-icon { width: 24px; }
+  .td-temp { width: 30px; }
+</style>
+
+{% assign ts_all = properties.timeseries %}
+{% assign now = ts_all[0] %}
+{% assign cur = now.data.instant.details %}
+{% assign cur_sym = now.data.next_1_hours.summary.symbol_code | default: now.data.next_6_hours.summary.symbol_code %}

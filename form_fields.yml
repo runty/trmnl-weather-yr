@@ -1,0 +1,19 @@
+- keyname: author_info
+  field_type: author_bio
+  name: About
+  category: environment
+  description: "Global weather forecast from Yr.no (Norwegian Meteorological Institute). Hourly + daily forecast for any location worldwide.<br><br>Built by <a href='https://github.com/runty' target='_blank'>runty</a>"
+
+- keyname: latitude
+  field_type: string
+  name: Latitude
+  description: "Your latitude (e.g. 49.154 for Richmond BC)"
+  placeholder: "49.154"
+  default: "49.154"
+
+- keyname: longitude
+  field_type: string
+  name: Longitude
+  description: "Your longitude (e.g. -123.158 for Richmond BC)"
+  placeholder: "-123.158"
+  default: "-123.158"

@@ -1,0 +1,32 @@
+<div class="layout layout--col">
+  <table class="hourly-tbl grow">
+    {% for h in ts_all limit: 18 %}
+      <tr>
+        {% assign utc_epoch = h.time | date: "%s" | plus: 0 %}
+        {% assign local_epoch = utc_epoch | plus: trmnl.user.utc_offset %}
+        <td class="nowrap text--right td-time"><span class="label label--small">{{ local_epoch | date: "%-I%P" }}</span></td>
+        <td class="td-icon text--center">
+          {% assign sym = h.data.next_1_hours.summary.symbol_code | default: h.data.next_6_hours.summary.symbol_code %}
+          {% if sym contains "rain" or sym contains "sleet" or sym contains "snow" or sym contains "thunder" %}{% assign wc = "wi-precip" %}{% else %}{% assign wc = "" %}{% endif %}
+          {% if sym contains "clearsky" and sym contains "night" %}{% assign wi = "wi-night-clear" %}{% elsif sym contains "clearsky" %}{% assign wi = "wi-day-sunny" %}{% elsif sym contains "fair" and sym contains "night" %}{% assign wi = "wi-night-clear" %}{% elsif sym contains "fair" %}{% assign wi = "wi-day-sunny" %}{% elsif sym contains "partlycloudy" and sym contains "night" %}{% assign wi = "wi-night-alt-partly-cloudy" %}{% elsif sym contains "partlycloudy" %}{% assign wi = "wi-day-cloudy" %}{% elsif sym contains "cloudy" %}{% assign wi = "wi-cloudy" %}{% elsif sym contains "fog" %}{% assign wi = "wi-fog" %}{% elsif sym contains "rain" %}{% assign wi = "wi-day-rain" %}{% elsif sym contains "snow" %}{% assign wi = "wi-day-snow" %}{% elsif sym contains "sleet" %}{% assign wi = "wi-day-rain-mix" %}{% elsif sym contains "thunder" %}{% assign wi = "wi-day-thunderstorm" %}{% else %}{% assign wi = "wi-cloud" %}{% endif %}
+          <i class="wi {{ wi }} {{ wc }} wi-sm"></i>
+        </td>
+        <td class="nowrap text--right td-temp"><span class="label label--small bold">{{ h.data.instant.details.air_temperature | round }}°</span></td>
+        {% assign precip = h.data.next_1_hours.details.precipitation_amount | default: 0 | times: 20 %}
+        {% if precip > 100 %}{% assign precip = 100 %}{% endif %}
+        <td>
+          <div class="hour-bar-wrap">
+            {% if precip > 0 %}
+              <div class="hour-bar" style="width: {{ precip | round }}%;"></div>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="title_bar">
+  <span class="title">Yr.no Weather</span>
+  <span class="instance">{{ cur.air_temperature | round }}°C</span>
+</div>
